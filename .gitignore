@@ -1,0 +1,4 @@
+/target
+forwardemail-lib/target
+forwardemail/target
+.env
