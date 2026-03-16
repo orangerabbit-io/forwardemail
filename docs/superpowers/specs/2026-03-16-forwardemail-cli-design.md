@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Rust CLI and TUI for the Forward Email API (forwardemail.net). Single binary (`forwardemail`) provides both a command-line interface covering the complete API and a read-only TUI for browsing. The project is structured as a Cargo workspace with a reusable library crate.
+A Rust CLI and TUI for the Forward Email API (forwardemail.net). Single binary (`forwardemail`) provides both a command-line interface covering the complete API and a read-only TUI for browsing. The project is structured as a Cargo workspace with a separate library crate (`forwardemail-lib`) so the API client can be consumed independently by other Rust projects or published to crates.io. The binary is the primary artifact.
 
 ## API Coverage
 
@@ -17,7 +17,7 @@ All currently available Forward Email API endpoints:
 | Logs | download |
 | Invites | create, accept, remove |
 | Members | update, remove |
-| Catch-all passwords | create |
+| Catch-all passwords | list, create, delete |
 | Encrypt | encrypt TXT records |
 
 Excludes "coming soon" endpoints (contacts, calendars, messages, folders).
@@ -97,11 +97,13 @@ Wraps `reqwest::blocking::Client`. Handles authentication, request construction,
   - `delete(path) -> Result<Response>`
   - `get_bytes(path) -> Result<Vec<u8>>` (for gzipped log downloads)
 - **Error handling**: `check_status()` maps HTTP status codes to descriptive errors:
+  - 400 -> "Bad request" (includes response body)
   - 401/403 -> "Authentication failed"
   - 404 -> "Not found"
   - 422 -> "Validation error" (includes response body)
   - 429 -> "Rate limited"
   - 5xx -> "Server error"
+- **Unauthenticated requests**: A separate constructor or method allows requests without auth for endpoints that don't require it (e.g., `POST /v1/encrypt`). Config resolution is lazy — only required when a command needs authentication.
 - **Headers**: Sends `Accept-Encoding: gzip`, `Content-Type: application/json`.
 
 ### Config (`config.rs`)
@@ -177,6 +179,7 @@ pub struct Domain {
 pub struct CreateDomain {
     pub domain: String,
     pub plan: Option<String>,         // "free", "enhanced_protection", "team"
+    pub team_domain: Option<String>,  // assign to team from another domain; "none" to disable
     pub catchall: Option<String>,
     pub has_adult_content_protection: Option<bool>,
     pub has_phishing_protection: Option<bool>,
@@ -266,9 +269,8 @@ pub struct Email {
 }
 
 pub struct EmailLimit {
+    pub count: u32,
     pub limit: u32,
-    pub remaining: u32,
-    pub reset_at: Option<String>,
 }
 
 pub struct SendEmail {
@@ -284,12 +286,71 @@ pub struct SendEmail {
 }
 ```
 
-#### Other Models
+The Forward Email API supports many additional Nodemailer send parameters (`attachments`, `raw`, `sender`, `inReplyTo`, `references`, `headers`, `messageId`, `date`, `list`). The `SendEmail` struct covers the most commonly used fields. Additional fields can be added incrementally as needed — the `--json` flag can always be used with `post` for full API access.
 
-- **Invite** (`invite.rs`): `email`, `group` ("admin"/"user")
-- **Member** (`member.rs`): `id`, `email`, `group`, domain association
-- **CatchAllPassword** (`catch_all_password.rs`): `new_password`, `description`
-- **Encrypt** (`encrypt.rs`): `input` string, response with encrypted value
+#### Invite (`invite.rs`)
+
+```rust
+pub struct Invite {
+    pub email: String,
+    pub group: String,       // "admin" or "user"
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+pub struct CreateInvite {
+    pub email: String,
+    pub group: String,       // "admin" or "user"
+}
+
+pub struct RemoveInvite {
+    pub email: String,
+}
+```
+
+#### Member (`member.rs`)
+
+```rust
+pub struct Member {
+    pub id: String,
+    pub email: String,
+    pub group: String,       // "admin" or "user"
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+pub struct UpdateMember {
+    pub group: String,       // "admin" or "user"
+}
+```
+
+#### CatchAllPassword (`catch_all_password.rs`)
+
+```rust
+pub struct CatchAllPassword {
+    pub id: String,
+    pub description: Option<String>,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+pub struct CreateCatchAllPassword {
+    pub new_password: Option<String>,
+    pub description: Option<String>,
+}
+```
+
+#### Encrypt (`encrypt.rs`)
+
+```rust
+pub struct EncryptRequest {
+    pub input: String,
+}
+
+pub struct EncryptResponse {
+    pub encrypted: String,
+}
+```
 
 ### Pagination
 
@@ -299,7 +360,14 @@ List endpoints accept common pagination params:
 - `page` (>= 1, default 1)
 - `limit` (10-50, default 10)
 
-A shared `PaginationParams` struct serializes to query parameters.
+Additional per-resource filters:
+- Domains list: `name` (RegExp filter)
+- Aliases list: `name` (RegExp), `recipient` (RegExp)
+- Emails list: `domain` (RegExp filter)
+
+A shared `PaginationParams` struct serializes to query parameters, with per-resource filter params added by each command handler.
+
+Pagination response headers (`X-Page-Count`, `X-Page-Current`, `X-Page-Size`, `X-Item-Count`) are parsed and displayed as a footer line in table mode: "Page X of Y (Z total items)".
 
 ## Binary Crate: `forwardemail`
 
@@ -330,7 +398,7 @@ forwardemail account create --email EMAIL --password PASS
 forwardemail account get
 forwardemail account update [--email EMAIL] [--given-name NAME] [--family-name NAME] [--avatar-url URL]
 
-forwardemail domains list [-q SEARCH] [--sort FIELD] [--page N] [--limit N]
+forwardemail domains list [-q SEARCH] [--name NAME] [--sort FIELD] [--page N] [--limit N]
 forwardemail domains create <DOMAIN> [--plan free|enhanced_protection|team] [--catchall BOOL] [--retention-days N] [flags...]
 forwardemail domains get <DOMAIN>
 forwardemail domains update <DOMAIN> [--smtp-port PORT] [--retention-days N] [flags...]
@@ -338,14 +406,14 @@ forwardemail domains delete <DOMAIN>
 forwardemail domains verify-records <DOMAIN>
 forwardemail domains verify-smtp <DOMAIN>
 
-forwardemail aliases list <DOMAIN> [-q SEARCH] [--sort FIELD] [--page N] [--limit N]
+forwardemail aliases list <DOMAIN> [-q SEARCH] [--name NAME] [--recipient RECIPIENT] [--sort FIELD] [--page N] [--limit N]
 forwardemail aliases create <DOMAIN> [--name NAME] [--recipients EMAILS] [--description DESC] [--labels LABELS] [flags...]
 forwardemail aliases get <DOMAIN> <ALIAS_ID>
 forwardemail aliases update <DOMAIN> <ALIAS_ID> [flags...]
 forwardemail aliases delete <DOMAIN> <ALIAS_ID>
 forwardemail aliases generate-password <DOMAIN> <ALIAS_ID> [--new-password PASS] [--emailed-instructions EMAIL]
 
-forwardemail emails list [-q SEARCH] [--sort FIELD] [--page N] [--limit N]
+forwardemail emails list [-q SEARCH] [--domain DOMAIN] [--sort FIELD] [--page N] [--limit N]
 forwardemail emails send [--from FROM] [--to TO] [--cc CC] [--bcc BCC] [--subject SUBJ] [--text TEXT] [--html HTML] [--reply-to ADDR] [--priority high|normal|low]
 forwardemail emails get <ID>
 forwardemail emails delete <ID>
@@ -360,7 +428,9 @@ forwardemail invites remove <DOMAIN> --email EMAIL
 forwardemail members update <DOMAIN> <MEMBER_ID> --group admin|user
 forwardemail members remove <DOMAIN> <MEMBER_ID>
 
+forwardemail catch-all-passwords list <DOMAIN>
 forwardemail catch-all-passwords create <DOMAIN> [--password PASS] [--description DESC]
+forwardemail catch-all-passwords delete <DOMAIN> <TOKEN_ID>
 
 forwardemail encrypt <INPUT>
 
@@ -373,7 +443,8 @@ forwardemail tui
 - **`OutputMode::Json`**: Pretty-printed JSON passthrough.
 - **`print_kv(pairs)`**: Right-aligned key-value pairs for single-item detail views.
 - **`print_confirm(message)`**: Single-line confirmation for mutations.
-- **`print_raw(text)`**: Passthrough for binary/text responses (log downloads).
+- **`print_raw(text)`**: Passthrough for binary/text responses.
+- **Log download**: The `logs download` command receives a gzipped CSV response. The binary decompresses the gzip and writes CSV to stdout (pipeable to a file). Rate limited to 10 requests/day by the API.
 
 ### TUI (`tui/`)
 
@@ -382,7 +453,7 @@ Launched via `forwardemail tui`. Read-only browsing of all resources.
 **App state machine** (`app.rs`):
 - States: `Dashboard`, `DomainList`, `DomainDetail`, `AliasList`, `AliasDetail`, `EmailList`, `EmailDetail`
 - Navigation: arrow keys/vim keys for list navigation, Enter to drill in, Esc/Backspace to go back, q to quit
-- Data loaded on navigation (blocking HTTP calls in the library)
+- Data loaded on navigation (blocking HTTP calls in the library). This causes brief UI freezes during network requests — acceptable for v1 read-only TUI. Future work: move network calls to a background thread.
 
 **Views** (`views/`):
 - Dashboard: account info summary
@@ -419,6 +490,7 @@ Launched via `forwardemail tui`. Read-only browsing of all resources.
 | tabled | 0.17 | | Table output |
 | ratatui | latest | | TUI framework |
 | crossterm | latest | | Terminal backend |
+| flate2 | 1 | | Gzip decompression for log downloads |
 
 ### Dev Dependencies
 
@@ -457,6 +529,37 @@ Each resource gets a test file. Tests use `mockito::Server` for HTTP mocking and
 - State transition tests on `App` struct: navigate forward/back, verify current state
 - Data loading: verify correct API calls made for each state transition
 - No render/screenshot tests
+
+## Build and Release
+
+### Nix (`flake.nix`)
+
+Following the updown-io pattern. Provides `packages.default` (buildRustPackage) and `devShells.default` with rustc, cargo, clippy, rustfmt, pkg-config, and openssl.
+
+### Semantic Release
+
+`.releaserc.json` following the orangerabbit-io/claude-plugins reference configuration:
+
+```json
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", { "changelogFile": "CHANGELOG.md" }],
+    ["@semantic-release/exec", {
+      "prepareCmd": "sed -i 's/^version = .*/version = \"${nextRelease.version}\"/' forwardemail/Cargo.toml forwardemail-lib/Cargo.toml"
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md", "forwardemail/Cargo.toml", "forwardemail-lib/Cargo.toml"],
+      "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+    }],
+    "@semantic-release/github"
+  ]
+}
+```
+
+GitHub Actions workflow (`.github/workflows/release.yml`): triggers on push to main, runs `npx semantic-release`.
 
 ## Error Handling
 
