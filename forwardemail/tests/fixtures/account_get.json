@@ -1,0 +1,8 @@
+{
+  "email": "user@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "plan": "enhanced_protection",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-06-01T00:00:00Z"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "alias123",
+  "name": "info",
+  "domain": "example.com",
+  "recipients": ["user@gmail.com", "other@gmail.com"],
+  "description": "Main info alias",
+  "is_enabled": true,
+  "has_imap": true,
+  "has_pgp": false,
+  "has_recipient_verification": false,
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-06-01T00:00:00Z"
+}
