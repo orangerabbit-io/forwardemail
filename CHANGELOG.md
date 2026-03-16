@@ -1,0 +1,26 @@
+# 1.0.0 (2026-03-16)
+
+
+### Features
+
+* add account model with row type and serde tests ([7824030](https://github.com/orangerabbit-io/forwardemail/commit/7824030db795576dbaafc18e68b6abaeb2436968))
+* add alias model with row type and serde tests ([424a5e8](https://github.com/orangerabbit-io/forwardemail/commit/424a5e8a9b6681829abd291c007fdbb8bf01d6d6))
+* add CLI structure with clap subcommands and lazy auth dispatch ([ad8b2ef](https://github.com/orangerabbit-io/forwardemail/commit/ad8b2efbc99304d7cd3d0552190a978f3afdea87))
+* add config module with 3-tier API key resolution ([1675004](https://github.com/orangerabbit-io/forwardemail/commit/1675004e32f80327b93662c39899dfd9ab1f3522))
+* add domain model with row type and serde tests ([7ecbb93](https://github.com/orangerabbit-io/forwardemail/commit/7ecbb93eee2bb27e3872456a7f3c1ce83f15bee9))
+* add email model with EmailLimit and serde tests ([400ed87](https://github.com/orangerabbit-io/forwardemail/commit/400ed875f525c649b373e067abd57c0ff96713b0))
+* add HTTP client with Basic Auth and unauthenticated mode ([8c85105](https://github.com/orangerabbit-io/forwardemail/commit/8c851052962d0f571b0e3d2179a64736bf44b897))
+* add invite, member, catch-all password, encrypt, and log models ([f828114](https://github.com/orangerabbit-io/forwardemail/commit/f82811427f637cdbb9874d9ddc034b34cb1c980a))
+* add output module with markdown table, JSON, KV formatting ([8b3398a](https://github.com/orangerabbit-io/forwardemail/commit/8b3398a0bd551ac3023890a7ecc28c29398f7eeb))
+* add TUI app state machine with navigation and event loop ([eaea389](https://github.com/orangerabbit-io/forwardemail/commit/eaea3896c261ba39c2a14f82fb6ca89b14ba7db0))
+* add TUI views with dashboard, domain/alias/email browsing ([247bd92](https://github.com/orangerabbit-io/forwardemail/commit/247bd929f59aad9d02cee08af8ed6acc9d309616))
+* implement account commands (create, get, update) ([3388666](https://github.com/orangerabbit-io/forwardemail/commit/33886666b95dfdaa35d84f47dbd2916a49967604))
+* implement alias commands (list, CRUD, generate-password) ([74bae37](https://github.com/orangerabbit-io/forwardemail/commit/74bae37d3e5a30ff3b3a9cdc04ee94bfbf5d5de4))
+* implement catch-all password commands (list, create, delete) ([c55bb12](https://github.com/orangerabbit-io/forwardemail/commit/c55bb126a741ab1523577204938173d03dc68537))
+* implement domain commands (list, CRUD, verify) ([c06f43d](https://github.com/orangerabbit-io/forwardemail/commit/c06f43d710e8a342e3833cea26c421412cf262ee))
+* implement email commands (list, send, get, delete, limit) ([bc4af8a](https://github.com/orangerabbit-io/forwardemail/commit/bc4af8a4ee5c0b3414898ec0268e8feee9a618c2))
+* implement encrypt command with unauthenticated client ([523d872](https://github.com/orangerabbit-io/forwardemail/commit/523d872bdc875d92cd8a850aa52f51f11fdb3afe))
+* implement invite commands (create, accept, remove) ([6473f73](https://github.com/orangerabbit-io/forwardemail/commit/6473f730f990331c31b4f91728ecff4d7c143973))
+* implement log download with gzip decompression ([a842f5b](https://github.com/orangerabbit-io/forwardemail/commit/a842f5b67a78b5d7283ef8d1d1ce1ae43862d563))
+* implement member commands (update, remove) ([9c760c2](https://github.com/orangerabbit-io/forwardemail/commit/9c760c222cc49c8dfc68ee679557b5b4517264ba))
+* scaffold workspace with forwardemail-lib and forwardemail crates ([050c753](https://github.com/orangerabbit-io/forwardemail/commit/050c7537b1296b30afec290a76b5044a7ab648c2))
