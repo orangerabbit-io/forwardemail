@@ -1,5 +1,6 @@
 mod cmd;
 mod output;
+mod tui;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -96,8 +97,10 @@ fn run(cli: Cli) -> Result<()> {
     match cli.command {
         Commands::Encrypt { input } => cmd::encrypt::run(&input, mode),
         Commands::Tui => {
-            eprintln!("TUI not yet implemented");
-            Ok(())
+            let config = forwardemail_lib::config::Config::load(cli.api_key.as_deref())?;
+            let client =
+                forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
+            crate::tui::run(&client)
         }
         command => {
             // All other commands require authentication
