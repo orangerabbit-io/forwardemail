@@ -1,0 +1,16 @@
+{
+  "name": "example.com",
+  "plan": "enhanced_protection",
+  "smtp_port": "25",
+  "has_mx_record": true,
+  "has_txt_record": true,
+  "has_adult_content_protection": true,
+  "has_phishing_protection": true,
+  "has_executable_protection": true,
+  "has_virus_protection": true,
+  "has_recipient_verification": false,
+  "retention_days": 30,
+  "max_recipients_per_alias": 10,
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-06-01T00:00:00Z"
+}
