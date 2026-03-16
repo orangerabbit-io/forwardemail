@@ -98,15 +98,13 @@ fn run(cli: Cli) -> Result<()> {
         Commands::Encrypt { input } => cmd::encrypt::run(&input, mode),
         Commands::Tui => {
             let config = forwardemail_lib::config::Config::load(cli.api_key.as_deref())?;
-            let client =
-                forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
+            let client = forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
             crate::tui::run(&client)
         }
         command => {
             // All other commands require authentication
             let config = forwardemail_lib::config::Config::load(cli.api_key.as_deref())?;
-            let client =
-                forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
+            let client = forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
 
             match command {
                 Commands::Account { action } => cmd::account::run(action, &client, mode),

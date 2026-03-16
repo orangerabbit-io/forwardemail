@@ -31,7 +31,9 @@ fn test_invites_create() {
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
     .success()
-    .stdout(predicate::str::contains("Invite created for invitee@example.com (admin)"));
+    .stdout(predicate::str::contains(
+        "Invite created for invitee@example.com (admin)",
+    ));
 
     mock.assert();
 }
@@ -50,17 +52,13 @@ fn test_invites_accept() {
         .create();
 
     let mut cmd = common::binary();
-    cmd.args([
-        "--api-key",
-        "test-key",
-        "invites",
-        "accept",
-        "example.com",
-    ])
-    .env("FORWARDEMAIL_BASE_URL", server.url())
-    .assert()
-    .success()
-    .stdout(predicate::str::contains("Invite accepted for domain: example.com"));
+    cmd.args(["--api-key", "test-key", "invites", "accept", "example.com"])
+        .env("FORWARDEMAIL_BASE_URL", server.url())
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "Invite accepted for domain: example.com",
+        ));
 
     mock.assert();
 }
@@ -91,7 +89,9 @@ fn test_invites_remove() {
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
     .success()
-    .stdout(predicate::str::contains("Invite removed for invitee@example.com"));
+    .stdout(predicate::str::contains(
+        "Invite removed for invitee@example.com",
+    ));
 
     mock.assert();
 }

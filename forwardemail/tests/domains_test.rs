@@ -113,17 +113,11 @@ fn test_domains_delete() {
         .create();
 
     let mut cmd = common::binary();
-    cmd.args([
-        "--api-key",
-        "test-key",
-        "domains",
-        "delete",
-        "example.com",
-    ])
-    .env("FORWARDEMAIL_BASE_URL", server.url())
-    .assert()
-    .success()
-    .stdout(predicate::str::contains("Domain deleted: example.com"));
+    cmd.args(["--api-key", "test-key", "domains", "delete", "example.com"])
+        .env("FORWARDEMAIL_BASE_URL", server.url())
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Domain deleted: example.com"));
 
     mock.assert();
 }
@@ -138,18 +132,12 @@ fn test_domains_not_found() {
         .create();
 
     let mut cmd = common::binary();
-    cmd.args([
-        "--api-key",
-        "test-key",
-        "domains",
-        "get",
-        "nonexistent.com",
-    ])
-    .env("FORWARDEMAIL_BASE_URL", server.url())
-    .assert()
-    .failure()
-    .code(1)
-    .stderr(predicate::str::contains("Not found"));
+    cmd.args(["--api-key", "test-key", "domains", "get", "nonexistent.com"])
+        .env("FORWARDEMAIL_BASE_URL", server.url())
+        .assert()
+        .failure()
+        .code(1)
+        .stderr(predicate::str::contains("Not found"));
 
     mock.assert();
 }

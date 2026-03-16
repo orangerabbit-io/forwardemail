@@ -17,18 +17,12 @@ fn test_aliases_list_table() {
         .create();
 
     let mut cmd = common::binary();
-    cmd.args([
-        "--api-key",
-        "test-key",
-        "aliases",
-        "list",
-        "example.com",
-    ])
-    .env("FORWARDEMAIL_BASE_URL", server.url())
-    .assert()
-    .success()
-    .stdout(predicate::str::contains("alias123"))
-    .stdout(predicate::str::contains("info"));
+    cmd.args(["--api-key", "test-key", "aliases", "list", "example.com"])
+        .env("FORWARDEMAIL_BASE_URL", server.url())
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("alias123"))
+        .stdout(predicate::str::contains("info"));
 
     mock.assert();
 }

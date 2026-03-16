@@ -4,28 +4,46 @@ use tabled::Tabled;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Alias {
     pub id: String,
-    #[serde(default)] pub name: Option<String>,
-    #[serde(default)] pub domain: Option<String>,
-    #[serde(default)] pub recipients: Option<Vec<String>>,
-    #[serde(default)] pub description: Option<String>,
-    #[serde(default)] pub labels: Option<Vec<String>>,
-    #[serde(default)] pub is_enabled: Option<bool>,
-    #[serde(default)] pub has_recipient_verification: Option<bool>,
-    #[serde(default)] pub has_imap: Option<bool>,
-    #[serde(default)] pub has_pgp: Option<bool>,
-    #[serde(default)] pub error_code_if_disabled: Option<u32>,
-    #[serde(default)] pub vacation_responder_is_enabled: Option<bool>,
-    #[serde(default)] pub created_at: Option<String>,
-    #[serde(default)] pub updated_at: Option<String>,
+    #[serde(default)]
+    pub name: Option<String>,
+    #[serde(default)]
+    pub domain: Option<String>,
+    #[serde(default)]
+    pub recipients: Option<Vec<String>>,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub labels: Option<Vec<String>>,
+    #[serde(default)]
+    pub is_enabled: Option<bool>,
+    #[serde(default)]
+    pub has_recipient_verification: Option<bool>,
+    #[serde(default)]
+    pub has_imap: Option<bool>,
+    #[serde(default)]
+    pub has_pgp: Option<bool>,
+    #[serde(default)]
+    pub error_code_if_disabled: Option<u32>,
+    #[serde(default)]
+    pub vacation_responder_is_enabled: Option<bool>,
+    #[serde(default)]
+    pub created_at: Option<String>,
+    #[serde(default)]
+    pub updated_at: Option<String>,
 }
 
 #[derive(Debug, Tabled)]
 pub struct AliasRow {
-    #[tabled(rename = "ID")] pub id: String,
-    #[tabled(rename = "NAME")] pub name: String,
-    #[tabled(rename = "RECIPIENTS")] pub recipients: String,
-    #[tabled(rename = "ENABLED")] pub enabled: String,
-    #[tabled(rename = "IMAP")] pub imap: String,
+    #[tabled(rename = "ID")]
+    pub id: String,
+    #[tabled(rename = "NAME")]
+    pub name: String,
+    #[tabled(rename = "RECIPIENTS")]
+    pub recipients: String,
+    #[tabled(rename = "ENABLED")]
+    pub enabled: String,
+    #[tabled(rename = "IMAP")]
+    pub imap: String,
 }
 
 impl From<&Alias> for AliasRow {
@@ -33,9 +51,21 @@ impl From<&Alias> for AliasRow {
         AliasRow {
             id: a.id.clone(),
             name: a.name.clone().unwrap_or("-".to_string()),
-            recipients: a.recipients.as_ref().map(|r| r.join(", ")).unwrap_or("-".to_string()),
-            enabled: a.is_enabled.map(|b| if b { "yes" } else { "no" }).unwrap_or("-").to_string(),
-            imap: a.has_imap.map(|b| if b { "yes" } else { "no" }).unwrap_or("-").to_string(),
+            recipients: a
+                .recipients
+                .as_ref()
+                .map(|r| r.join(", "))
+                .unwrap_or("-".to_string()),
+            enabled: a
+                .is_enabled
+                .map(|b| if b { "yes" } else { "no" })
+                .unwrap_or("-")
+                .to_string(),
+            imap: a
+                .has_imap
+                .map(|b| if b { "yes" } else { "no" })
+                .unwrap_or("-")
+                .to_string(),
         }
     }
 }

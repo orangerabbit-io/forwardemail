@@ -39,7 +39,8 @@ mod tests {
 
     #[test]
     fn test_deserialize_catch_all_password() {
-        let json = r#"{"id":"pw123","description":"My catch-all","created_at":"2024-01-01T00:00:00Z"}"#;
+        let json =
+            r#"{"id":"pw123","description":"My catch-all","created_at":"2024-01-01T00:00:00Z"}"#;
         let cap: CatchAllPassword = serde_json::from_str(json).unwrap();
         assert_eq!(cap.id, Some("pw123".to_string()));
         assert_eq!(cap.description, Some("My catch-all".to_string()));

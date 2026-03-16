@@ -30,7 +30,9 @@ fn test_members_update() {
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
     .success()
-    .stdout(predicate::str::contains("Member updated: member@example.com (admin)"));
+    .stdout(predicate::str::contains(
+        "Member updated: member@example.com (admin)",
+    ));
 
     mock.assert();
 }

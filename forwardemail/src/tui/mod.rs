@@ -29,8 +29,7 @@ pub fn run(client: &Client) -> Result<()> {
 
         if let Event::Key(key) = event::read()? {
             match key.code {
-                KeyCode::Char('q')
-                | KeyCode::Char('c')
+                KeyCode::Char('q') | KeyCode::Char('c')
                     if key.modifiers.contains(KeyModifiers::CONTROL) =>
                 {
                     app.should_quit = true;

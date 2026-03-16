@@ -9,7 +9,7 @@ pub fn draw(f: &mut Frame, app: &App) {
         .direction(Direction::Vertical)
         .constraints([
             Constraint::Length(1), // header
-            Constraint::Min(0),   // content
+            Constraint::Min(0),    // content
             Constraint::Length(1), // footer
         ])
         .split(f.area());
@@ -29,16 +29,16 @@ pub fn draw(f: &mut Frame, app: &App) {
             format!("Forward Email > Domains > {} > Aliases", domain)
         }
         View::AliasDetail(domain, _) => {
-            format!(
-                "Forward Email > Domains > {} > Aliases > Detail",
-                domain
-            )
+            format!("Forward Email > Domains > {} > Aliases > Detail", domain)
         }
         View::EmailList => "Forward Email > Emails".to_string(),
         View::EmailDetail(_) => "Forward Email > Emails > Detail".to_string(),
     };
-    let header = Paragraph::new(breadcrumb)
-        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD));
+    let header = Paragraph::new(breadcrumb).style(
+        Style::default()
+            .fg(Color::Cyan)
+            .add_modifier(Modifier::BOLD),
+    );
     f.render_widget(header, chunks[0]);
 
     // Content

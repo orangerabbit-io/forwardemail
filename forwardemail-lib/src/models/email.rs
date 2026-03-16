@@ -4,23 +4,36 @@ use tabled::Tabled;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Email {
     pub id: String,
-    #[serde(default)] pub status: Option<String>,
-    #[serde(default)] pub from: Option<String>,
-    #[serde(default)] pub to: Option<Vec<String>>,
-    #[serde(default)] pub cc: Option<Vec<String>>,
-    #[serde(default)] pub bcc: Option<Vec<String>>,
-    #[serde(default)] pub subject: Option<String>,
-    #[serde(default)] pub created_at: Option<String>,
-    #[serde(default)] pub updated_at: Option<String>,
+    #[serde(default)]
+    pub status: Option<String>,
+    #[serde(default)]
+    pub from: Option<String>,
+    #[serde(default)]
+    pub to: Option<Vec<String>>,
+    #[serde(default)]
+    pub cc: Option<Vec<String>>,
+    #[serde(default)]
+    pub bcc: Option<Vec<String>>,
+    #[serde(default)]
+    pub subject: Option<String>,
+    #[serde(default)]
+    pub created_at: Option<String>,
+    #[serde(default)]
+    pub updated_at: Option<String>,
 }
 
 #[derive(Debug, Tabled)]
 pub struct EmailRow {
-    #[tabled(rename = "ID")] pub id: String,
-    #[tabled(rename = "STATUS")] pub status: String,
-    #[tabled(rename = "FROM")] pub from: String,
-    #[tabled(rename = "TO")] pub to: String,
-    #[tabled(rename = "SUBJECT")] pub subject: String,
+    #[tabled(rename = "ID")]
+    pub id: String,
+    #[tabled(rename = "STATUS")]
+    pub status: String,
+    #[tabled(rename = "FROM")]
+    pub from: String,
+    #[tabled(rename = "TO")]
+    pub to: String,
+    #[tabled(rename = "SUBJECT")]
+    pub subject: String,
 }
 
 impl From<&Email> for EmailRow {
@@ -29,7 +42,11 @@ impl From<&Email> for EmailRow {
             id: e.id.clone(),
             status: e.status.clone().unwrap_or("-".to_string()),
             from: e.from.clone().unwrap_or("-".to_string()),
-            to: e.to.as_ref().map(|t| t.join(", ")).unwrap_or("-".to_string()),
+            to: e
+                .to
+                .as_ref()
+                .map(|t| t.join(", "))
+                .unwrap_or("-".to_string()),
             subject: e.subject.clone().unwrap_or("-".to_string()),
         }
     }

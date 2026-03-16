@@ -97,11 +97,7 @@ impl Client {
             .context("Failed to read response bytes")
     }
 
-    pub fn post(
-        &self,
-        path: &str,
-        body: &HashMap<String, serde_json::Value>,
-    ) -> Result<Response> {
+    pub fn post(&self, path: &str, body: &HashMap<String, serde_json::Value>) -> Result<Response> {
         let url = format!("{}{}", self.base_url, path);
         let mut req = self.http.post(&url).json(body);
         if !self.api_key.is_empty() {
@@ -113,11 +109,7 @@ impl Client {
         Self::check_status(resp)
     }
 
-    pub fn put(
-        &self,
-        path: &str,
-        body: &HashMap<String, serde_json::Value>,
-    ) -> Result<Response> {
+    pub fn put(&self, path: &str, body: &HashMap<String, serde_json::Value>) -> Result<Response> {
         let url = format!("{}{}", self.base_url, path);
         let mut req = self.http.put(&url).json(body);
         if !self.api_key.is_empty() {
