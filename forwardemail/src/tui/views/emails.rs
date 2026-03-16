@@ -10,8 +10,11 @@ pub fn draw_list(f: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
-    let header = Row::new(vec!["ID", "STATUS", "FROM", "TO", "SUBJECT"])
-        .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Cyan));
+    let header = Row::new(vec!["ID", "STATUS", "FROM", "TO", "SUBJECT"]).style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Cyan),
+    );
 
     let rows: Vec<Row> = app
         .emails

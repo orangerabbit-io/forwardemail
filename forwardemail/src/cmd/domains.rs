@@ -188,10 +188,7 @@ pub fn run(action: DomainsAction, client: &Client, mode: OutputMode) -> Result<(
                 );
             }
             if let Some(v) = has_phishing_protection {
-                body.insert(
-                    "has_phishing_protection".to_string(),
-                    serde_json::json!(v),
-                );
+                body.insert("has_phishing_protection".to_string(), serde_json::json!(v));
             }
             if let Some(v) = has_executable_protection {
                 body.insert(
@@ -296,10 +293,7 @@ pub fn run(action: DomainsAction, client: &Client, mode: OutputMode) -> Result<(
                 );
             }
             if let Some(v) = has_phishing_protection {
-                body.insert(
-                    "has_phishing_protection".to_string(),
-                    serde_json::json!(v),
-                );
+                body.insert("has_phishing_protection".to_string(), serde_json::json!(v));
             }
             if let Some(v) = has_executable_protection {
                 body.insert(
@@ -346,8 +340,7 @@ pub fn run(action: DomainsAction, client: &Client, mode: OutputMode) -> Result<(
             Ok(())
         }
         DomainsAction::VerifyRecords { domain } => {
-            let resp =
-                client.get(&format!("/v1/domains/{}/verify-records", domain))?;
+            let resp = client.get(&format!("/v1/domains/{}/verify-records", domain))?;
             match mode {
                 OutputMode::Json => {
                     let json: serde_json::Value = resp.json()?;
@@ -378,8 +371,7 @@ pub fn run(action: DomainsAction, client: &Client, mode: OutputMode) -> Result<(
             Ok(())
         }
         DomainsAction::VerifySmtp { domain } => {
-            let resp =
-                client.get(&format!("/v1/domains/{}/verify-smtp", domain))?;
+            let resp = client.get(&format!("/v1/domains/{}/verify-smtp", domain))?;
             match mode {
                 OutputMode::Json => {
                     let json: serde_json::Value = resp.json()?;
@@ -389,10 +381,7 @@ pub fn run(action: DomainsAction, client: &Client, mode: OutputMode) -> Result<(
                     let d: Domain = resp.json()?;
                     let pairs = vec![
                         ("Domain", d.name),
-                        (
-                            "SMTP Port",
-                            d.smtp_port.clone().unwrap_or("-".to_string()),
-                        ),
+                        ("SMTP Port", d.smtp_port.clone().unwrap_or("-".to_string())),
                     ];
                     output::print_kv(&pairs);
                 }

@@ -39,7 +39,8 @@ mod tests {
 
     #[test]
     fn test_deserialize_invite() {
-        let json = r#"{"email":"user@example.com","group":"admin","created_at":"2024-01-01T00:00:00Z"}"#;
+        let json =
+            r#"{"email":"user@example.com","group":"admin","created_at":"2024-01-01T00:00:00Z"}"#;
         let invite: Invite = serde_json::from_str(json).unwrap();
         assert_eq!(invite.email, Some("user@example.com".to_string()));
         assert_eq!(invite.group, Some("admin".to_string()));

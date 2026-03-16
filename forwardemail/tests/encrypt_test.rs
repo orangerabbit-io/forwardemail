@@ -19,7 +19,9 @@ fn test_encrypt_no_auth_required() {
         .env("HOME", "/tmp/nonexistent-forwardemail-test")
         .assert()
         .success()
-        .stdout(predicate::str::contains("v=spf1 a mx include:spf.forwardemail.net ~all"));
+        .stdout(predicate::str::contains(
+            "v=spf1 a mx include:spf.forwardemail.net ~all",
+        ));
 
     mock.assert();
 }

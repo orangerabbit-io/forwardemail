@@ -42,7 +42,9 @@ fn test_catch_all_passwords_create() {
             "authorization",
             mockito::Matcher::Regex("Basic .+".to_string()),
         )
-        .with_body(r#"{"id":"pw456","description":"New password","created_at":"2024-01-01T00:00:00Z"}"#)
+        .with_body(
+            r#"{"id":"pw456","description":"New password","created_at":"2024-01-01T00:00:00Z"}"#,
+        )
         .with_header("content-type", "application/json")
         .create();
 
@@ -59,7 +61,9 @@ fn test_catch_all_passwords_create() {
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
     .success()
-    .stdout(predicate::str::contains("Catch-all password created: pw456"));
+    .stdout(predicate::str::contains(
+        "Catch-all password created: pw456",
+    ));
 
     mock.assert();
 }
@@ -92,7 +96,9 @@ fn test_catch_all_passwords_delete() {
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
     .success()
-    .stdout(predicate::str::contains("Catch-all password deleted: pw123"));
+    .stdout(predicate::str::contains(
+        "Catch-all password deleted: pw123",
+    ));
 
     mock.assert();
 }
