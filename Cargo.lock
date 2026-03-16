@@ -508,6 +508,7 @@ dependencies = [
  "mockito",
  "predicates",
  "ratatui",
+ "reqwest",
  "serde_json",
  "serial_test",
  "tabled",
