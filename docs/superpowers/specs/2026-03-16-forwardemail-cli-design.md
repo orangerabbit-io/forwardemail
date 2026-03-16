@@ -548,10 +548,10 @@ Following the updown-io pattern. Provides `packages.default` (buildRustPackage) 
     "@semantic-release/release-notes-generator",
     ["@semantic-release/changelog", { "changelogFile": "CHANGELOG.md" }],
     ["@semantic-release/exec", {
-      "prepareCmd": "sed -i 's/^version = .*/version = \"${nextRelease.version}\"/' forwardemail/Cargo.toml forwardemail-lib/Cargo.toml"
+      "prepareCmd": "sed -i 's/^version = .*/version = \"${nextRelease.version}\"/' forwardemail/Cargo.toml forwardemail-lib/Cargo.toml && cargo generate-lockfile"
     }],
     ["@semantic-release/git", {
-      "assets": ["CHANGELOG.md", "forwardemail/Cargo.toml", "forwardemail-lib/Cargo.toml"],
+      "assets": ["CHANGELOG.md", "Cargo.lock", "forwardemail/Cargo.toml", "forwardemail-lib/Cargo.toml"],
       "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
     }],
     "@semantic-release/github"
