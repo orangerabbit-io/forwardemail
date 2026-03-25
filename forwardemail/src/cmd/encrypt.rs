@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 
 use crate::output::{self, OutputMode};
 
@@ -10,17 +10,15 @@ pub fn run(input: &str, mode: OutputMode) -> Result<()> {
     body.insert("input".to_string(), serde_json::json!(input));
 
     let resp = client.post("/v1/encrypt", &body)?;
+    let text = resp.text().context("Failed to read encrypt response")?;
 
     match mode {
         OutputMode::Json => {
-            let json: serde_json::Value = resp.json()?;
+            let json = serde_json::json!({ "encrypted": text });
             output::print_json(&json);
         }
         OutputMode::Table => {
-            let result: forwardemail_lib::models::encrypt::EncryptResponse = resp.json()?;
-            if let Some(encrypted) = result.encrypted {
-                println!("{}", encrypted);
-            }
+            println!("{}", text);
         }
     }
 

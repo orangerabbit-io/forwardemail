@@ -1,1 +1,1 @@
-{"encrypted": "v=spf1 a mx include:spf.forwardemail.net ~all"}
+v=spf1 a mx include:spf.forwardemail.net ~all
