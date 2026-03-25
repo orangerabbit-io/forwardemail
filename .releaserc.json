@@ -7,10 +7,10 @@
       "changelogFile": "CHANGELOG.md"
     }],
     ["@semantic-release/exec", {
-      "prepareCmd": "sed -i 's/^version = .*/version = \"${nextRelease.version}\"/' forwardemail/Cargo.toml forwardemail-lib/Cargo.toml && cargo generate-lockfile"
+      "prepareCmd": "sed -i 's/^version = .*/version = \"${nextRelease.version}\"/' forwardemail/Cargo.toml forwardemail-lib/Cargo.toml && sed -i 's/version = \"[0-9]*\\.[0-9]*\\.[0-9]*\";/version = \"${nextRelease.version}\";/' flake.nix && cargo generate-lockfile"
     }],
     ["@semantic-release/git", {
-      "assets": ["CHANGELOG.md", "Cargo.lock", "forwardemail/Cargo.toml", "forwardemail-lib/Cargo.toml"],
+      "assets": ["CHANGELOG.md", "Cargo.lock", "flake.nix", "forwardemail/Cargo.toml", "forwardemail-lib/Cargo.toml"],
       "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
     }],
     "@semantic-release/github"
