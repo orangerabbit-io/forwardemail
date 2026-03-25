@@ -85,7 +85,7 @@ fn test_aliases_get() {
     .success()
     .stdout(predicate::str::contains("alias123"))
     .stdout(predicate::str::contains("info"))
-    .stdout(predicate::str::contains("user@gmail.com, other@gmail.com"));
+    .stdout(predicate::str::contains("user@example.com, other@example.com"));
 
     mock.assert();
 }
@@ -113,7 +113,7 @@ fn test_aliases_create() {
         "--name",
         "info",
         "--recipients",
-        "user@gmail.com",
+        "user@example.com",
     ])
     .env("FORWARDEMAIL_BASE_URL", server.url())
     .assert()
