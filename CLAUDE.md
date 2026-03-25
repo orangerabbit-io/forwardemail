@@ -1,6 +1,6 @@
-# Forward Email CLI + TUI
+# Forward Email CLI
 
-Rust CLI and TUI for the Forward Email API. Cargo workspace with two crates.
+Rust CLI for the Forward Email API. Cargo workspace with two crates.
 
 ## Structure
 

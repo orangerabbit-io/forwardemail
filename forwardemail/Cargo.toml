@@ -2,12 +2,12 @@
 name = "forwardemail"
 version = "1.0.0"
 edition = "2021"
-description = "Command-line interface and TUI for the Forward Email API"
+description = "Command-line interface for the Forward Email API"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/orangerabbit-io/forwardemail"
 homepage = "https://github.com/orangerabbit-io/forwardemail"
 readme = "../README.md"
-keywords = ["forwardemail", "email", "cli", "tui"]
+keywords = ["forwardemail", "email", "cli"]
 categories = ["command-line-utilities"]
 
 [dependencies]
@@ -16,8 +16,6 @@ anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 serde_json = "1"
 tabled = "0.17"
-ratatui = "0.29"
-crossterm = "0.28"
 flate2 = "1"
 reqwest = { version = "0.12", features = ["blocking"] }
 
@@ -26,3 +24,4 @@ mockito = "1"
 assert_cmd = "2"
 predicates = "3"
 serial_test = "3"
+uuid = { version = "1", features = ["v4"] }

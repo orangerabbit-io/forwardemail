@@ -1,6 +1,6 @@
 # forwardemail
 
-A command-line interface and TUI for the [Forward Email](https://forwardemail.net) API.
+A command-line interface for the [Forward Email](https://forwardemail.net) API.
 
 ## Install
 
@@ -112,14 +112,6 @@ forwardemail catch-all-passwords delete example.com <token_id>
 ```sh
 forwardemail encrypt "forward-email=user@example.com"
 ```
-
-### TUI
-
-```sh
-forwardemail tui
-```
-
-Browse account, domains, aliases, and emails interactively. Navigate with arrow keys or vim keys (j/k), Enter to drill in, Esc to go back, q to quit.
 
 ### Output
 
