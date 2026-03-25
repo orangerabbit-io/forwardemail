@@ -139,12 +139,20 @@ forwardemail domains list --json | jq '.[].name'
 ## Development
 
 ```sh
-cargo test --workspace   # 56 tests (unit + integration)
+cargo test --workspace   # unit + integration (mocked)
 cargo clippy --workspace # lint
 cargo fmt --all          # format
 ```
 
-Tests use [mockito](https://crates.io/crates/mockito) -- no live API calls.
+Mock tests use [mockito](https://crates.io/crates/mockito) -- no API key needed.
+
+### Live API tests
+
+```sh
+FORWARDEMAIL_LIVE_TEST=1 cargo test --test live_test -- --test-threads=1
+```
+
+Requires `FORWARDEMAIL_API_KEY`. Exercises real endpoints including domain/alias/password CRUD lifecycles with automatic cleanup.
 
 ## License
 
