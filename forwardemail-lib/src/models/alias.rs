@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_alias() {
-        let json = r#"{"id":"alias123","name":"info","recipients":["user@gmail.com","other@gmail.com"],"is_enabled":true,"has_imap":false,"has_pgp":false,"created_at":"2024-01-01T00:00:00Z"}"#;
+        let json = r#"{"id":"alias123","name":"info","recipients":["user@example.com","other@example.com"],"is_enabled":true,"has_imap":false,"has_pgp":false,"created_at":"2024-01-01T00:00:00Z"}"#;
         let alias: Alias = serde_json::from_str(json).unwrap();
         assert_eq!(alias.id, "alias123");
         assert_eq!(alias.name, Some("info".to_string()));

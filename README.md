@@ -59,7 +59,7 @@ forwardemail domains verify-smtp example.com
 
 ```sh
 forwardemail aliases list example.com
-forwardemail aliases create example.com --name info --recipients user@gmail.com
+forwardemail aliases create example.com --name info --recipients user@example.com
 forwardemail aliases get example.com <alias_id>
 forwardemail aliases update example.com <alias_id> --is-enabled false
 forwardemail aliases delete example.com <alias_id>

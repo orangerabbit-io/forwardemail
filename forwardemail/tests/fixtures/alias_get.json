@@ -2,7 +2,7 @@
   "id": "alias123",
   "name": "info",
   "domain": "example.com",
-  "recipients": ["user@gmail.com", "other@gmail.com"],
+  "recipients": ["user@example.com", "other@example.com"],
   "description": "Main info alias",
   "is_enabled": true,
   "has_imap": true,
