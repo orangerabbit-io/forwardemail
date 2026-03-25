@@ -1,13 +1,12 @@
 mod cmd;
 mod output;
-mod tui;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use std::process;
 
 #[derive(Parser)]
-#[command(name = "forwardemail", about = "CLI and TUI for the Forward Email API")]
+#[command(name = "forwardemail", about = "CLI for the Forward Email API")]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Commands,
@@ -69,8 +68,6 @@ pub enum Commands {
         /// Plaintext TXT record to encrypt
         input: String,
     },
-    /// Launch interactive TUI
-    Tui,
 }
 
 fn main() {
@@ -96,11 +93,6 @@ fn run(cli: Cli) -> Result<()> {
 
     match cli.command {
         Commands::Encrypt { input } => cmd::encrypt::run(&input, mode),
-        Commands::Tui => {
-            let config = forwardemail_lib::config::Config::load(cli.api_key.as_deref())?;
-            let client = forwardemail_lib::client::Client::new(config.api_key, config.base_url)?;
-            crate::tui::run(&client)
-        }
         command => {
             // All other commands require authentication
             let config = forwardemail_lib::config::Config::load(cli.api_key.as_deref())?;
@@ -117,7 +109,7 @@ fn run(cli: Cli) -> Result<()> {
                 Commands::CatchAllPasswords { action } => {
                     cmd::catch_all_passwords::run(action, &client, mode)
                 }
-                Commands::Encrypt { .. } | Commands::Tui => unreachable!(),
+                Commands::Encrypt { .. } => unreachable!(),
             }
         }
     }

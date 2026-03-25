@@ -1,12 +1,52 @@
+use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::{Deserialize, Serialize};
 use tabled::Tabled;
+
+/// Deserializes a field that may be either a string or an object with a `name` field.
+/// Returns the string directly, or extracts `name` from the object.
+fn deserialize_string_or_object_name<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct StringOrObject;
+
+    impl<'de> Visitor<'de> for StringOrObject {
+        type Value = Option<String>;
+
+        fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+            f.write_str("a string or an object with a name field")
+        }
+
+        fn visit_none<E: de::Error>(self) -> Result<Self::Value, E> {
+            Ok(None)
+        }
+
+        fn visit_str<E: de::Error>(self, v: &str) -> Result<Self::Value, E> {
+            Ok(Some(v.to_owned()))
+        }
+
+        fn visit_map<M: MapAccess<'de>>(self, mut map: M) -> Result<Self::Value, M::Error> {
+            let mut name = None;
+            while let Some(key) = map.next_key::<&str>()? {
+                if key == "name" {
+                    name = Some(map.next_value::<String>()?);
+                } else {
+                    map.next_value::<de::IgnoredAny>()?;
+                }
+            }
+            Ok(name)
+        }
+    }
+
+    deserializer.deserialize_any(StringOrObject)
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Alias {
     pub id: String,
     #[serde(default)]
     pub name: Option<String>,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_string_or_object_name")]
     pub domain: Option<String>,
     #[serde(default)]
     pub recipients: Option<Vec<String>>,
@@ -87,6 +127,20 @@ mod tests {
         assert_eq!(alias.id, "alias123");
         assert_eq!(alias.name, Some("info".to_string()));
         assert_eq!(alias.recipients.unwrap().len(), 2);
+    }
+
+    #[test]
+    fn test_deserialize_alias_with_domain_object() {
+        let json = r#"{"id":"alias123","name":"info","domain":{"name":"example.com","id":"dom1","plan":"free"}}"#;
+        let alias: Alias = serde_json::from_str(json).unwrap();
+        assert_eq!(alias.domain, Some("example.com".to_string()));
+    }
+
+    #[test]
+    fn test_deserialize_alias_with_domain_string() {
+        let json = r#"{"id":"alias123","domain":"example.com"}"#;
+        let alias: Alias = serde_json::from_str(json).unwrap();
+        assert_eq!(alias.domain, Some("example.com".to_string()));
     }
 
     #[test]
