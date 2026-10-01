@@ -4,3 +4,4 @@ forwardemail/target
 .env
 *.pem
 *.key
+.worktrees/
